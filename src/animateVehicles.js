@@ -87,6 +87,7 @@ export function animateVehicles() {
 
         if (rowData.respawnTimer <= 0) {
           ref.position.x = spawnX;
+          ref.visible = true;
           rowData.waitingToRespawn = false;
         }
 
@@ -102,6 +103,7 @@ export function animateVehicles() {
       ref.position.x = nextX;
 
       if (hasClearedView) {
+        ref.visible = false;
         rowData.waitingToRespawn = true;
         rowData.respawnTimer = 3;
       }

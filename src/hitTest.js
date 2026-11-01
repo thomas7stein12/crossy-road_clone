@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { metadata as rows } from "./components/Map.js";
+import { getRowData } from "./components/Map.js";
 import { player, position } from "./components/Player.js";
 import { tileSize } from "./constants.js";
 import { isPlayerMoving } from "./animatePlayer.js";
@@ -33,7 +33,7 @@ function isSupportedByWater(row) {
 }
 
 export function hitTest(scene) {
-  const row = rows[position.currentRow - 1];
+  const row = getRowData(position.currentRow - 1);
 
   if (!row) return;
 

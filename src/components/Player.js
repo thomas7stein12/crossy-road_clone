@@ -1,8 +1,11 @@
 import * as THREE from "three";
 import { endsUpInValidPosition } from "../utilities/endUpInValidPosition.js";
-import { metadata as rows, addRows } from "./Map.js";
-
+import { addRows, lastGeneratedRow, pruneRows } from "./Map.js";
 export const player = Player();
+
+const MAX_BACKTRACK_ROWS = 10;
+
+let highestRowReached = 0;
 
 function Player() {
   const player = new THREE.Group();
@@ -54,6 +57,7 @@ export function initializePlayer() {
   position.currentTile = 0;
 
   movesQueue.length = 0;
+  highestRowReached = 0;
 }
 
 export function queueMove(direction) {
@@ -67,6 +71,7 @@ export function queueMove(direction) {
       tileIndex: position.currentTile,
     },
     [...movesQueue, direction],
+    highestRowReached - MAX_BACKTRACK_ROWS,
   );
 
   if (!isValidMove) return;
@@ -82,8 +87,18 @@ export function stepCompleted() {
   if (direction === "left") position.currentTile -= 1;
   if (direction === "right") position.currentTile += 1;
 
-  if (position.currentRow > rows.length - 10) addRows();
+  // Keep track of the furthest row reached
+  if (position.currentRow > highestRowReached) {
+    highestRowReached = position.currentRow;
+  }
 
+  // Generate more rows as the player approaches the end
+  if (position.currentRow > lastGeneratedRow - MAX_BACKTRACK_ROWS) {
+    addRows();
+  }
+
+  // Remove rows that are too far behind
+  pruneRows(highestRowReached - MAX_BACKTRACK_ROWS);
   const scoreDOM = document.getElementById("score");
   if (scoreDOM) scoreDOM.innerText = position.currentRow.toString();
 }
