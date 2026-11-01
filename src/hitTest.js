@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { metadata as rows } from "./components/Map.js";
-import { player, position } from "./components/Player.js";
+import { player, position, movesQueue } from "./components/Player.js";
 
 const resultDOM = document.getElementById("result-container");
 const finalScoreDOM = document.getElementById("final-score");
@@ -23,6 +23,8 @@ export function hitTest() {
         if (!resultDOM || !finalScoreDOM) return;
         resultDOM.style.visibility = "visible";
         finalScoreDOM.innerText = position.currentRow.toString();
+
+        movesQueue.length = 0;
       }
     });
   }

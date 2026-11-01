@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { Renderer } from "./components/Renderer.js";
-import { Camera } from "./components/Camera.js";
+import { Camera, updateCamera } from "./components/Camera.js";
 import { DirectionalLight } from "./components/DirectionalLight.js";
 import { player, initializePlayer } from "./components/Player.js";
 import { map, initializeMap } from "./components/Map.js";
@@ -8,7 +8,7 @@ import { animateVehicles } from "./animateVehicles.js";
 import { animatePlayer } from "./animatePlayer.js";
 import { hitTest } from "./hitTest.js";
 import "./style.css";
-import "./collectUserInput.js"
+import "./collectUserInput.js";
 
 const scene = new THREE.Scene();
 scene.add(player);
@@ -29,7 +29,7 @@ const resultDOM = document.getElementById("result-container");
 
 initializeGame();
 
-document.querySelector("#retry")?.addEventListener("click", initializeGame)
+document.querySelector("#retry")?.addEventListener("click", initializeGame);
 
 function initializeGame() {
   initializePlayer();
@@ -40,6 +40,12 @@ function initializeGame() {
 }
 
 const renderer = Renderer();
+
+window.addEventListener("resize", () => {
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  updateCamera(camera);
+});
+
 renderer.setAnimationLoop(animate);
 
 function animate() {

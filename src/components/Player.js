@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import { endsUpInValidPosition } from "../utilities/endUpInValidPosition.js";
-import { metadata as rows, addRows } from "./Map.js"
-
+import { metadata as rows, addRows } from "./Map.js";
 
 export const player = Player();
 
@@ -47,7 +46,7 @@ export const movesQueue = [];
 
 export function initializePlayer() {
   player.position.x = 0;
-  player.position.y = 0
+  player.position.y = 0;
   player.children[0].position.z = 0;
 
   position.currentRow = 0;
@@ -57,6 +56,10 @@ export function initializePlayer() {
 }
 
 export function queueMove(direction) {
+  // Don't allow movement after the player dies
+  const resultDOM = document.getElementById("result-container");
+  if (resultDOM?.style.visibility === "visible") return;
+
   const isValidMove = endsUpInValidPosition(
     {
       rowIndex: position.currentRow,

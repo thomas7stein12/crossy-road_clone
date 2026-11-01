@@ -1,4 +1,5 @@
 import { queueMove } from "./components/Player.js";
+import { clearQueuedMoves } from "./animatePlayer.js";
 
 document
   .getElementById("forward")
@@ -16,18 +17,33 @@ document
   .getElementById("right")
   ?.addEventListener("click", () => queueMove("right"));
 
+const repeatingKeys = new Set();
+
 window.addEventListener("keydown", (event) => {
-    if (event.key === "ArrowUp") {
-        event.preventDefault();
-        queueMove("forward");
-    } else if (event.key === "ArrowDown") {
-        event.preventDefault();
-        queueMove("backward");
-    } else if (event.key === "ArrowLeft") {
-        event.preventDefault();
-        queueMove("left");
-    } else if (event.key === "ArrowRight") {
-        event.preventDefault();
-        queueMove("right");
-    }
-})
+  const directions = {
+    ArrowUp: "forward",
+    ArrowDown: "backward",
+    ArrowLeft: "left",
+    ArrowRight: "right",
+  };
+
+  const direction = directions[event.key];
+
+  if (!direction) return;
+
+  event.preventDefault();
+
+  // Detect when the browser starts repeating a held key
+  if (event.repeat) {
+    repeatingKeys.add(event.code);
+  }
+
+  queueMove(direction);
+});
+
+window.addEventListener("keyup", (event) => {
+  // Only clear the queue if the key was actually held down
+  if (repeatingKeys.delete(event.code) && repeatingKeys.size === 0) {
+    clearQueuedMoves();
+  }
+});

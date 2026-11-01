@@ -21,6 +21,15 @@ export function animatePlayer() {
   }
 }
 
+export function clearQueuedMoves() {
+  // Let the current movement finish, but remove everything waiting behind it
+  if (moveClock.running) {
+    movesQueue.splice(1);
+  } else {
+    movesQueue.length = 0;
+  }
+}
+
 function setPosition(progress) {
   const startX = position.currentTile * tileSize;
   const startY = position.currentRow * tileSize;
