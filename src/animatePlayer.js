@@ -9,10 +9,18 @@ import { tileSize } from "./constants.js";
 
 const moveClock = new THREE.Clock(false);
 
+let moveStartX = 0;
+let moveStartY = 0;
+
 export function animatePlayer() {
   if (!movesQueue.length) return;
 
-  if (!moveClock.running) moveClock.start();
+  if (!moveClock.running) {
+    moveStartX = player.position.x;
+    moveStartY = player.position.y;
+
+    moveClock.start();
+  }
 
   const stepTime = 0.2;
   const progress = Math.min(1, moveClock.getElapsedTime() / stepTime);
@@ -44,8 +52,8 @@ export function stopPlayerAnimation() {
 }
 
 function setPosition(progress) {
-  const startX = position.currentTile * tileSize;
-  const startY = position.currentRow * tileSize;
+  const startX = moveStartX;
+  const startY = moveStartY;
   let endX = startX;
   let endY = startY;
 

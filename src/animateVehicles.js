@@ -1,6 +1,8 @@
 import * as THREE from "three";
-import { metadata as rows } from "./components/Map.js";
-import { player } from "./components/Player.js";
+import { metadata as rows, getRowData } from "./components/Map.js";
+import { player, position } from "./components/Player.js";
+import { isPlayerMoving } from "./animatePlayer.js";
+import { tileSize } from "./constants.js";
 
 const clock = new THREE.Clock();
 
@@ -40,22 +42,68 @@ export function animateVehicles() {
     if (rowData.type === "water") {
       const movement = rowData.direction ? 1 : -1;
 
+      // Check whether the player is standing on this water row
+      const isPlayersRow = getRowData(position.currentRow) === rowData;
+
+      let supportingLog = null;
+
+      // Only carry the player when they are standing still
+      if (isPlayersRow && !isPlayerMoving()) {
+        const playerX = player.position.x;
+
+        // Don't carry the player if they're standing on a lily pad
+        const onLilyPad = rowData.lilyPads.some((pad) => {
+          const padX = pad.tileIndex * tileSize;
+
+          return Math.abs(playerX - padX) <= pad.radius + 7.5;
+        });
+
+        // Find the log currently supporting the player
+        if (!onLilyPad) {
+          supportingLog = rowData.logs.find((logData) => {
+            if (!logData.ref) return false;
+
+            const halfLength = (logData.lengthInTiles * tileSize) / 2;
+
+            return (
+              Math.abs(playerX - logData.ref.position.x) <= halfLength + 7.5
+            );
+          });
+        }
+      }
+
       rowData.logs.forEach((logData) => {
         const ref = logData.ref;
 
         if (!ref) throw Error("Log reference is missing");
 
-        const halfLength = (logData.lengthInTiles * 42) / 2;
+        const halfLength = (logData.lengthInTiles * tileSize) / 2;
 
-        const nextX = ref.position.x + movement * rowData.speed * delta;
+        const previousX = ref.position.x;
+
+        const nextX = previousX + movement * rowData.speed * delta;
+
+        let wrapped = false;
 
         // Wait until the ENTIRE log is off-screen
         if (movement > 0 && nextX - halfLength > right) {
           ref.position.x = left - halfLength;
+          wrapped = true;
         } else if (movement < 0 && nextX + halfLength < left) {
           ref.position.x = right + halfLength;
+          wrapped = true;
         } else {
           ref.position.x = nextX;
+        }
+
+        // Carry the player along with the supporting log
+        if (!wrapped && logData === supportingLog) {
+          const movementDelta = ref.position.x - previousX;
+
+          player.position.x += movementDelta;
+
+          // Keep the logical tile position synchronized
+          position.currentTile = Math.round(player.position.x / tileSize);
         }
       });
 
