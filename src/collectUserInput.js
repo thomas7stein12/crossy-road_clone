@@ -1,21 +1,27 @@
 import { queueMove } from "./components/Player.js";
 import { clearQueuedMoves } from "./animatePlayer.js";
 
-document
-  .getElementById("forward")
-  ?.addEventListener("click", () => queueMove("forward"));
+document.getElementById("forward")?.addEventListener("pointerdown", (event) => {
+  event.preventDefault();
+  queueMove("forward");
+});
 
 document
   .getElementById("backward")
-  ?.addEventListener("click", () => queueMove("backward"));
+  ?.addEventListener("pointerdown", (event) => {
+    event.preventDefault();
+    queueMove("backward");
+  });
 
-document
-  .getElementById("left")
-  ?.addEventListener("click", () => queueMove("left"));
+document.getElementById("left")?.addEventListener("pointerdown", (event) => {
+  event.preventDefault();
+  queueMove("left");
+});
 
-document
-  .getElementById("right")
-  ?.addEventListener("click", () => queueMove("right"));
+document.getElementById("right")?.addEventListener("pointerdown", (event) => {
+  event.preventDefault();
+  queueMove("right");
+});
 
 const repeatingKeys = new Set();
 

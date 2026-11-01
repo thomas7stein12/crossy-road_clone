@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { Renderer } from "./components/Renderer.js";
+import { Renderer, resizeRenderer } from "./components/Renderer.js";
 import { Camera, updateCamera } from "./components/Camera.js";
 import { DirectionalLight } from "./components/DirectionalLight.js";
 import {
@@ -34,6 +34,12 @@ const scoreDOM = document.getElementById("score");
 const resultDOM = document.getElementById("result-container");
 const startDOM = document.getElementById("start-container");
 
+// Background music
+const backgroundMusic = new Audio("/background-music.m4a");
+
+backgroundMusic.loop = true;
+backgroundMusic.volume = 0.4;
+
 initializeGame();
 
 document.querySelector("#retry")?.addEventListener("click", () => {
@@ -58,6 +64,22 @@ function initializeGame(startImmediately = false) {
   setGameStarted(startImmediately);
 }
 
+// Start the game
+function startGame() {
+  if (isGameStarted()) return;
+
+  setGameStarted(true);
+
+  if (startDOM) startDOM.style.visibility = "hidden";
+
+  document.body.classList.remove("game-not-started");
+
+  // Start background music
+  backgroundMusic.play().catch((error) => {
+    console.error("Could not play background music:", error);
+  });
+}
+
 // Handle starting and restarting with Space
 window.addEventListener("keydown", (event) => {
   if (event.code !== "Space" || event.repeat) return;
@@ -70,20 +92,19 @@ window.addEventListener("keydown", (event) => {
     return;
   }
 
-  // Start the game for the first time
-  if (!isGameStarted()) {
-    setGameStarted(true);
+  startGame();
+});
 
-    if (startDOM) startDOM.style.visibility = "hidden";
-
-    document.body.classList.remove("game-not-started");
-  }
+// Allow mobile users to tap the starting screen
+startDOM?.addEventListener("pointerdown", (event) => {
+  event.preventDefault();
+  startGame();
 });
 
 const renderer = Renderer();
 
 window.addEventListener("resize", () => {
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  resizeRenderer(renderer);
   updateCamera(camera);
 });
 

@@ -119,3 +119,135 @@ body.game-not-started #controls,
 body.game-not-started #score {
   visibility: hidden;
 }
+
+/* Show the correct start prompt for touch devices */
+.mobile-prompt {
+  display: none;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .desktop-prompt {
+    display: none;
+  }
+
+  .mobile-prompt {
+    display: inline;
+  }
+}
+
+/* Make the starting screen feel tappable */
+#start-container {
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+/* Full-screen game layout */
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+body {
+  position: fixed;
+  inset: 0;
+  display: block;
+  min-width: 0;
+  min-height: 0;
+}
+
+canvas.game {
+  display: block;
+  z-index: 0;
+  touch-action: none;
+}
+
+/* Mobile-friendly directional controls */
+#controls {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: calc(16px + env(safe-area-inset-bottom));
+  width: 100%;
+  min-width: 0;
+  z-index: 10;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0 12px;
+  pointer-events: none;
+}
+
+#controls div {
+  display: grid;
+  grid-template-columns: repeat(3, 56px);
+  grid-template-rows: repeat(2, 50px);
+  gap: 8px;
+
+  pointer-events: auto;
+}
+
+/* Make the forward button span all three columns */
+#controls button:first-of-type {
+  grid-column: 1 / -1;
+}
+
+#controls button {
+  width: 100%;
+  height: 100%;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Larger touch targets on phones and tablets */
+@media (pointer: coarse) {
+  #controls div {
+    grid-template-columns: repeat(3, 64px);
+    grid-template-rows: repeat(2, 64px);
+    gap: 8px;
+  }
+
+  #controls button {
+    font-size: 24px;
+    border-radius: 8px;
+  }
+}
+
+/* Keep the score inside the actual game viewport */
+#score {
+  position: fixed;
+  top: calc(var(--game-top, 0px) + 12px + env(safe-area-inset-top));
+  left: 16px;
+  z-index: 5;
+  font-size: clamp(1rem, 4vw, 2rem);
+  pointer-events: none;
+}
+
+/* Keep overlays covering the entire phone screen */
+#start-container {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  touch-action: manipulation;
+}
+
+#result-container {
+  position: fixed;
+  inset: 0;
+  min-width: 0;
+  min-height: 0;
+  z-index: 20;
+}
+
+/* Give portrait mobile screens a consistent background */
+@media (orientation: portrait) and (pointer: coarse) {
+  body {
+    background-color: #263b35;
+  }
+}

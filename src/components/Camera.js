@@ -4,9 +4,14 @@ const size = 300;
 const targetAspect = 16 / 9;
 
 function getCameraSize() {
-  const aspect = window.innerWidth / window.innerHeight;
+  const isPortraitMobile =
+    window.innerHeight > window.innerWidth &&
+    window.matchMedia("(pointer: coarse)").matches;
 
-  // Keep the same horizontal viewing area on narrow screens
+  const aspect = isPortraitMobile
+    ? targetAspect
+    : window.innerWidth / window.innerHeight;
+
   const width = size * Math.max(aspect, targetAspect);
   const height = width / aspect;
 
