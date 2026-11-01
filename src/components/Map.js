@@ -5,6 +5,9 @@ import { Tree } from "./Tree.js";
 import { Car } from "./Car.js";
 import { Truck } from "./Truck.js";
 import { Road } from "./Road.js";
+import { Water } from "./Water.js";
+import { Log } from "./Log.js";
+import { LilyPad } from "./LilyPad.js";
 
 export const metadata = [];
 
@@ -13,7 +16,7 @@ export const map = new THREE.Group();
 export function initializeMap() {
   metadata.length = 0;
   map.remove(...map.children);
-  
+
   for (let rowIndex = 0; rowIndex > -5; rowIndex--) {
     const grass = Grass(rowIndex);
     map.add(grass);
@@ -67,6 +70,24 @@ export function addRows() {
         vehicle.ref = truck;
         row.add(truck);
       });
+      map.add(row);
+    }
+
+    if (rowData.type === "water") {
+      const row = Water(rowIndex);
+
+      rowData.logs.forEach((logData) => {
+        const log = Log(logData.initialTileIndex, logData.lengthInTiles);
+
+        logData.ref = log;
+        row.add(log);
+      });
+
+      rowData.lilyPads.forEach((padData) => {
+        const lilyPad = LilyPad(padData.tileIndex);
+        row.add(lilyPad);
+      });
+
       map.add(row);
     }
   });

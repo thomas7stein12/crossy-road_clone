@@ -1,5 +1,10 @@
 import * as THREE from "three";
-import { player, movesQueue, position, stepCompleted } from "./components/Player.js";
+import {
+  player,
+  movesQueue,
+  position,
+  stepCompleted,
+} from "./components/Player.js";
 import { tileSize } from "./constants.js";
 
 const moveClock = new THREE.Clock(false);
@@ -28,6 +33,14 @@ export function clearQueuedMoves() {
   } else {
     movesQueue.length = 0;
   }
+}
+
+export function isPlayerMoving() {
+  return moveClock.running;
+}
+
+export function stopPlayerAnimation() {
+  moveClock.stop();
 }
 
 function setPosition(progress) {

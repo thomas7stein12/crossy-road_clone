@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { minTileIndex, maxTileIndex } from "../constants.js";
+import { minTileIndex, maxTileIndex, tilesPerRow } from "../constants.js";
 
 export function generateRows(amount) {
   const rows = [];
@@ -14,6 +14,8 @@ function generateRow() {
   const type = randomElement(["car", "truck", "forest"]);
   if (type === "car") return generateCarLaneMetadata();
   if (type === "truck") return generateTruckLaneMetadata();
+  if (type === "water") return generateWaterMetadata();
+
   return generateForestMetadata();
 }
 
@@ -81,12 +83,56 @@ function generateTruckLaneMetadata() {
     occupiedTiles.add(initialTileIndex + 1);
     occupiedTiles.add(initialTileIndex + 2);
 
-    const color = randomElement([
-      0x6e0107, 0x01106e, 0x036e01, 0x6e4401,
-    ]);
+    const color = randomElement([0x6e0107, 0x01106e, 0x036e01, 0x6e4401]);
 
     return { initialTileIndex, color };
   });
 
   return { type: "truck", direction, speed, vehicles };
+}
+
+function generateWaterMetadata() {
+  const direction = randomElement([true, false]);
+  const speed = randomElement([18, 24, 30, 36]);
+
+  const logCount = randomElement([3, 4]);
+
+  const spacing = (tilesPerRow + 2) / logCount;
+
+  const logs = Array.from({ length: logCount }, (_, index) => {
+    const lengthInTiles = randomElement([3, 3, 4]);
+
+    const initialTileIndex =
+      minTileIndex -
+      1 +
+      spacing * index +
+      (Math.random() - 0.5) * 0.5;
+
+    return {
+      initialTileIndex,
+      lengthInTiles,
+    };
+  });
+
+  const padCount = randomElement([2, 3]);
+  const occupiedTiles = new Set();
+
+  while (occupiedTiles.size < padCount) {
+    occupiedTiles.add(
+      THREE.MathUtils.randInt(minTileIndex, maxTileIndex),
+    );
+  }
+
+  const lilyPads = [...occupiedTiles].map((tileIndex) => ({
+    tileIndex,
+    radius: 14,
+  }));
+
+  return {
+    type: "water",
+    direction,
+    speed,
+    logs,
+    lilyPads,
+  };
 }

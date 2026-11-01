@@ -7,6 +7,7 @@ import { map, initializeMap } from "./components/Map.js";
 import { animateVehicles } from "./animateVehicles.js";
 import { animatePlayer } from "./animatePlayer.js";
 import { hitTest } from "./hitTest.js";
+import { animateParticleBursts } from "./effects/ParticleBurst.js";
 import "./style.css";
 import "./collectUserInput.js";
 
@@ -51,7 +52,8 @@ renderer.setAnimationLoop(animate);
 function animate() {
   animateVehicles();
   animatePlayer();
-  hitTest();
+  hitTest(scene);
+  animateParticleBursts();
 
   renderer.render(scene, camera);
 }

@@ -48,6 +48,7 @@ export function initializePlayer() {
   player.position.x = 0;
   player.position.y = 0;
   player.children[0].position.z = 0;
+  player.children[0].visible = true;
 
   position.currentRow = 0;
   position.currentTile = 0;
