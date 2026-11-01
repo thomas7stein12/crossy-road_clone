@@ -135,6 +135,17 @@ function generateWaterMetadata() {
 }
 
 function generateTrainMetadata() {
+  const color = randomElement([
+    0x187f85, // Teal
+    0x2869a8, // Ocean blue
+    0x6256a8, // Indigo
+    0x89518d, // Purple
+    0xa64f76, // Rose
+    0xb85e42, // Rust
+    0xa47a32, // Golden brown
+    0x56834a, // Forest green
+  ]);
+
   const direction = randomElement([true, false]);
 
   // Trains are between 3 and 6 truck lengths
@@ -142,13 +153,14 @@ function generateTrainMetadata() {
   const length = lengthInTruckLengths * 100;
 
   // Much faster than cars and trucks
-  const speed = randomElement([350, 400, 450, 500]);
+  const speed = randomElement([650, 700, 750, 800]);
 
   return {
     type: "train",
     direction,
     speed,
     length,
+    color,
 
     // Train movement state
     started: false,

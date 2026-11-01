@@ -96,7 +96,7 @@ export function addRows() {
     if (rowData.type === "train") {
       const row = TrainTrack(rowIndex);
 
-      const train = Train(rowData.length, rowData.direction);
+      const train = Train(rowData.length, rowData.direction, rowData.color);
 
       rowData.ref = train;
 
