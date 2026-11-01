@@ -6,6 +6,15 @@ export const player = Player();
 const MAX_BACKTRACK_ROWS = 10;
 
 let highestRowReached = 0;
+let gameStarted = false;
+
+export function setGameStarted(value) {
+  gameStarted = value;
+}
+
+export function isGameStarted() {
+  return gameStarted;
+}
 
 function Player() {
   const player = new THREE.Group();
@@ -58,13 +67,16 @@ export function initializePlayer() {
 
   movesQueue.length = 0;
   highestRowReached = 0;
+  gameStarted = false;
 }
 
 export function queueMove(direction) {
   // Don't allow movement after the player dies
+  // Don't allow movement before the game starts or after death
   const resultDOM = document.getElementById("result-container");
-  if (resultDOM?.style.visibility === "visible") return;
 
+  if (!gameStarted || resultDOM?.style.visibility === "visible") return;
+  
   const isValidMove = endsUpInValidPosition(
     {
       rowIndex: position.currentRow,

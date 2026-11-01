@@ -69,3 +69,53 @@ body {
     cursor: pointer;
   }
 }
+
+/* Starting screen */
+#start-container {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.4);
+  color: white;
+  visibility: hidden;
+  z-index: 10;
+}
+
+#start-content {
+  padding: 24px;
+}
+
+#start-content h1 {
+  font-size: clamp(1rem, 4vw, 2.5rem);
+  line-height: 1.5;
+  margin: 0 0 32px;
+  text-shadow: 4px 4px 0 rgba(0, 0, 0, 0.4);
+}
+
+#start-content p {
+  font-size: clamp(0.65rem, 1.8vw, 1rem);
+  line-height: 1.8;
+  margin: 0;
+  animation: start-prompt-pulse 1.6s ease-in-out infinite;
+}
+
+/* Gently pulse the start prompt */
+@keyframes start-prompt-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Hide the score and controls before the game starts */
+body.game-not-started #controls,
+body.game-not-started #score {
+  visibility: hidden;
+}
