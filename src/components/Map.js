@@ -10,6 +10,7 @@ import { Log } from "./Log.js";
 import { LilyPad } from "./LilyPad.js";
 import { Train } from "./Train.js";
 import { TrainTrack } from "./TrainTrack.js";
+import { MapBoundary } from "./MapBoundary.js";
 
 export const metadata = [];
 
@@ -19,9 +20,10 @@ export function initializeMap() {
   metadata.length = 0;
   map.remove(...map.children);
 
-  for (let rowIndex = 0; rowIndex > -5; rowIndex--) {
+  for (let rowIndex = 0; rowIndex > -20; rowIndex--) {
     const grass = Grass(rowIndex);
     map.add(grass);
+    map.add(MapBoundary(rowIndex, "grass"));
   }
   addRows();
 }
@@ -103,5 +105,15 @@ export function addRows() {
       row.add(train);
       map.add(row);
     }
+
+    // Add the appropriate decorative boundary to every row
+    const boundaryType =
+      rowData.type === "forest"
+        ? "grass"
+        : rowData.type === "car" || rowData.type === "truck"
+          ? "road"
+          : rowData.type;
+
+    map.add(MapBoundary(rowIndex, boundaryType));
   });
 }

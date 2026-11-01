@@ -1,16 +1,41 @@
 import * as THREE from "three";
 import { metadata as rows } from "./components/Map.js";
-import { minTileIndex, maxTileIndex, tileSize } from "./constants.js";
+import { player } from "./components/Player.js";
 
 const clock = new THREE.Clock();
+
+const cameraSize = 300;
+const targetAspect = 16 / 9;
+const offscreenPadding = 100;
+
+function getVisibleXBounds() {
+  const aspect = window.innerWidth / window.innerHeight;
+
+  const cameraWidth = cameraSize * Math.max(aspect, targetAspect);
+
+  const cameraHeight = cameraWidth / aspect;
+
+  // Account for the angled camera when calculating
+  // how far the world extends horizontally on screen.
+  const horizontalLimit = cameraWidth / Math.sqrt(2);
+  const verticalLimit = (cameraHeight * Math.sqrt(6)) / 2;
+
+  const halfVisibleWidth = Math.min(horizontalLimit, verticalLimit);
+
+  const halfRange = halfVisibleWidth + offscreenPadding;
+
+  return {
+    left: player.position.x - halfRange,
+    right: player.position.x + halfRange,
+  };
+}
 
 export function animateVehicles() {
   const delta = clock.getDelta();
 
-  rows.forEach((rowData) => {
-    const beginningOfRow = (minTileIndex - 2) * tileSize;
-    const endOfRow = (maxTileIndex + 2) * tileSize;
+  const { left, right } = getVisibleXBounds();
 
+  rows.forEach((rowData) => {
     // Animate water logs
     if (rowData.type === "water") {
       const movement = rowData.direction ? 1 : -1;
@@ -20,14 +45,15 @@ export function animateVehicles() {
 
         if (!ref) throw Error("Log reference is missing");
 
-        const halfLength = (logData.lengthInTiles * tileSize) / 2;
+        const halfLength = (logData.lengthInTiles * 42) / 2;
 
         const nextX = ref.position.x + movement * rowData.speed * delta;
 
-        if (movement > 0 && nextX - halfLength > endOfRow) {
-          ref.position.x = beginningOfRow - halfLength;
-        } else if (movement < 0 && nextX + halfLength < beginningOfRow) {
-          ref.position.x = endOfRow + halfLength;
+        // Wait until the ENTIRE log is off-screen
+        if (movement > 0 && nextX - halfLength > right) {
+          ref.position.x = left - halfLength;
+        } else if (movement < 0 && nextX + halfLength < left) {
+          ref.position.x = right + halfLength;
         } else {
           ref.position.x = nextX;
         }
@@ -45,9 +71,8 @@ export function animateVehicles() {
       const movement = rowData.direction ? 1 : -1;
       const halfLength = rowData.length / 2;
 
-      // Where the train starts entering the map
-      const spawnX =
-        movement > 0 ? beginningOfRow - halfLength : endOfRow + halfLength;
+      // Spawn completely outside the camera view
+      const spawnX = movement > 0 ? left - halfLength : right + halfLength;
 
       // First initialization
       if (!rowData.started) {
@@ -56,7 +81,7 @@ export function animateVehicles() {
         return;
       }
 
-      // Wait three seconds after leaving the map
+      // Wait three seconds after the entire train exits
       if (rowData.waitingToRespawn) {
         rowData.respawnTimer -= delta;
 
@@ -68,18 +93,15 @@ export function animateVehicles() {
         return;
       }
 
-      // Move the train
       const nextX = ref.position.x + movement * rowData.speed * delta;
 
-      // Check whether the ENTIRE train has left the map
-      const hasClearedMap =
-        movement > 0
-          ? nextX - halfLength > endOfRow
-          : nextX + halfLength < beginningOfRow;
+      // Check whether the entire train has left the view
+      const hasClearedView =
+        movement > 0 ? nextX - halfLength > right : nextX + halfLength < left;
 
       ref.position.x = nextX;
 
-      if (hasClearedMap) {
+      if (hasClearedView) {
         rowData.waitingToRespawn = true;
         rowData.respawnTimer = 3;
       }
@@ -88,18 +110,24 @@ export function animateVehicles() {
     }
 
     // Existing car and truck animation
-    if (rowData.type !== "car" && rowData.type !== "truck") return;
+    if (rowData.type !== "car" && rowData.type !== "truck") {
+      return;
+    }
+
+    const halfLength = rowData.type === "car" ? 30 : 50;
 
     rowData.vehicles.forEach(({ ref }) => {
       if (!ref) throw Error("Vehicle reference is missing");
 
       const movement = rowData.direction ? 1 : -1;
+
       const nextX = ref.position.x + movement * rowData.speed * delta;
 
-      if (movement > 0 && nextX > endOfRow) {
-        ref.position.x = beginningOfRow;
-      } else if (movement < 0 && nextX < beginningOfRow) {
-        ref.position.x = endOfRow;
+      // Only wrap after the complete vehicle leaves the view
+      if (movement > 0 && nextX - halfLength > right) {
+        ref.position.x = left - halfLength;
+      } else if (movement < 0 && nextX + halfLength < left) {
+        ref.position.x = right + halfLength;
       } else {
         ref.position.x = nextX;
       }

@@ -1,11 +1,11 @@
 import * as THREE from "three";
-import { tilesPerRow, tileSize } from "../constants.js";
+import { visualRowWidth, tileSize } from "../constants.js";
 
 export function Water(rowIndex) {
   const water = new THREE.Group();
   water.position.y = rowIndex * tileSize;
 
-  const foundation = new THREE.BoxGeometry(tilesPerRow * tileSize, tileSize, 3);
+  const foundation = new THREE.BoxGeometry(visualRowWidth, tileSize, 3);
 
   const material = new THREE.MeshLambertMaterial({
     color: 0x287f9f,

@@ -1,11 +1,11 @@
 import * as THREE from "three";
-import { tilesPerRow, tileSize } from "../constants.js";
+import { visualRowWidth, tileSize } from "../constants.js";
 
 export function TrainTrack(rowIndex) {
   const track = new THREE.Group();
   track.position.y = rowIndex * tileSize;
 
-  const width = tilesPerRow * tileSize;
+  const width = visualRowWidth;
 
   // Gravel foundation
   const foundation = new THREE.Mesh(
