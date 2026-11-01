@@ -7,7 +7,8 @@ export function createParticleBurst(scene, position, color = 0xd62828) {
   const group = new THREE.Group();
   group.position.copy(position);
 
-  const geometry = new THREE.BoxGeometry(5.5, 5.5, 5.5);
+  // Larger particles
+  const geometry = new THREE.BoxGeometry(11, 11, 11);
 
   const material = new THREE.MeshLambertMaterial({
     color,
@@ -16,27 +17,29 @@ export function createParticleBurst(scene, position, color = 0xd62828) {
 
   const particles = [];
 
-  for (let i = 0; i < 8; i++) {
+  // Create a much larger explosion
+  for (let i = 0; i < 28; i++) {
     const particle = new THREE.Mesh(geometry, material);
 
-    const angle = (i / 8) * Math.PI * 2 + (Math.random() - 0.5) * 0.6;
+    // Spread particles in every direction
+    const angle = (i / 28) * Math.PI * 2 + (Math.random() - 0.5) * 0.8;
 
-    const speed = 50 + Math.random() * 45;
+    const speed = 125 + Math.random() * 60;
 
     particle.userData.velocity = new THREE.Vector3(
       Math.cos(angle) * speed,
       Math.sin(angle) * speed,
-      45 + Math.random() * 45,
+      90 + Math.random() * 55,
     );
 
     particle.userData.rotationSpeed = new THREE.Vector3(
-      (Math.random() - 0.5) * 12,
-      (Math.random() - 0.5) * 12,
-      (Math.random() - 0.5) * 12,
+      (Math.random() - 0.5) * 20,
+      (Math.random() - 0.5) * 20,
+      (Math.random() - 0.5) * 20,
     );
 
     particle.userData.age = 0;
-    particle.userData.lifetime = 0.7 + Math.random() * 0.45;
+    particle.userData.lifetime = 1.2 + Math.random() * 0.5;
 
     group.add(particle);
     particles.push(particle);
@@ -76,14 +79,18 @@ export function animateParticleBursts() {
 
       remaining++;
 
-      data.velocity.z -= 140 * delta;
+      // Strong gravity
+      data.velocity.z -= 160 * delta;
 
+      // Move particles outward
       particle.position.addScaledVector(data.velocity, delta);
 
+      // Spin particles
       particle.rotation.x += data.rotationSpeed.x * delta;
       particle.rotation.y += data.rotationSpeed.y * delta;
       particle.rotation.z += data.rotationSpeed.z * delta;
 
+      // Shrink before disappearing
       particle.scale.setScalar(1 - progress);
     }
 
