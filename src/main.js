@@ -66,18 +66,20 @@ function initializeGame(startImmediately = false) {
 
 // Start the game
 function startGame() {
-  if (isGameStarted()) return;
+  if (!isGameStarted()) {
+    setGameStarted(true);
 
-  setGameStarted(true);
+    if (startDOM) startDOM.style.visibility = "hidden";
 
-  if (startDOM) startDOM.style.visibility = "hidden";
+    document.body.classList.remove("game-not-started");
+  }
 
-  document.body.classList.remove("game-not-started");
-
-  // Start background music
-  backgroundMusic.play().catch((error) => {
-    console.error("Could not play background music:", error);
-  });
+  // Start music without restarting an already playing track
+  if (backgroundMusic.paused) {
+    backgroundMusic.play().catch((error) => {
+      console.error("Could not play background music:", error);
+    });
+  }
 }
 
 // Handle starting and restarting with Space
@@ -96,8 +98,7 @@ window.addEventListener("keydown", (event) => {
 });
 
 // Allow mobile users to tap the starting screen
-startDOM?.addEventListener("pointerdown", (event) => {
-  event.preventDefault();
+startDOM?.addEventListener("click", () => {
   startGame();
 });
 
