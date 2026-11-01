@@ -33,7 +33,7 @@ function isSupportedByWater(row) {
 }
 
 export function hitTest(scene) {
-  const row = getRowData(position.currentRow - 1);
+  const row = getRowData(position.currentRow);
 
   if (!row) return;
 

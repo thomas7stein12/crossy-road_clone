@@ -18,7 +18,7 @@ export function endsUpInValidPosition(
     return false;
   }
 
-  const finalRow = getRowData(finalPosition.rowIndex - 1);
+  const finalRow = getRowData(finalPosition.rowIndex);
   if (
     finalRow &&
     finalRow.type === "forest" &&

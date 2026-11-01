@@ -44,11 +44,11 @@ function generateForestMetadata() {
 
 function generateCarLaneMetadata() {
   const direction = randomElement([true, false]);
-  const speed = randomElement([95, 115, 135, 155, 175, 195]);
+  const speed = randomElement([225, 245, 275, 285, 305, 335]);
 
   const occupiedTiles = new Set();
 
-  const vehicles = Array.from({ length: 3 }, () => {
+  const vehicles = Array.from({ length: 4 }, () => {
     let initialTileIndex;
     do {
       initialTileIndex = THREE.MathUtils.randInt(minTileIndex, maxTileIndex);
@@ -74,7 +74,7 @@ function generateTruckLaneMetadata() {
 
   const occupiedTiles = new Set();
 
-  const vehicles = Array.from({ length: 2 }, () => {
+  const vehicles = Array.from({ length: 3 }, () => {
     let initialTileIndex;
     do {
       initialTileIndex = THREE.MathUtils.randInt(minTileIndex, maxTileIndex);
@@ -153,7 +153,7 @@ function generateTrainMetadata() {
   const length = lengthInTruckLengths * 100;
 
   // Much faster than cars and trucks
-  const speed = randomElement([650, 700, 750, 800]);
+  const speed = randomElement([700, 800, 900, 1000]);
 
   return {
     type: "train",
