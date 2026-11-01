@@ -36,6 +36,57 @@ export function animateVehicles() {
       return;
     }
 
+    // Animate trains
+    if (rowData.type === "train") {
+      const ref = rowData.ref;
+
+      if (!ref) throw Error("Train reference is missing");
+
+      const movement = rowData.direction ? 1 : -1;
+      const halfLength = rowData.length / 2;
+
+      // Where the train starts entering the map
+      const spawnX =
+        movement > 0 ? beginningOfRow - halfLength : endOfRow + halfLength;
+
+      // First initialization
+      if (!rowData.started) {
+        ref.position.x = spawnX;
+        rowData.started = true;
+        return;
+      }
+
+      // Wait three seconds after leaving the map
+      if (rowData.waitingToRespawn) {
+        rowData.respawnTimer -= delta;
+
+        if (rowData.respawnTimer <= 0) {
+          ref.position.x = spawnX;
+          rowData.waitingToRespawn = false;
+        }
+
+        return;
+      }
+
+      // Move the train
+      const nextX = ref.position.x + movement * rowData.speed * delta;
+
+      // Check whether the ENTIRE train has left the map
+      const hasClearedMap =
+        movement > 0
+          ? nextX - halfLength > endOfRow
+          : nextX + halfLength < beginningOfRow;
+
+      ref.position.x = nextX;
+
+      if (hasClearedMap) {
+        rowData.waitingToRespawn = true;
+        rowData.respawnTimer = 3;
+      }
+
+      return;
+    }
+
     // Existing car and truck animation
     if (rowData.type !== "car" && rowData.type !== "truck") return;
 

@@ -8,6 +8,8 @@ import { Road } from "./Road.js";
 import { Water } from "./Water.js";
 import { Log } from "./Log.js";
 import { LilyPad } from "./LilyPad.js";
+import { Train } from "./Train.js";
+import { TrainTrack } from "./TrainTrack.js";
 
 export const metadata = [];
 
@@ -88,6 +90,17 @@ export function addRows() {
         row.add(lilyPad);
       });
 
+      map.add(row);
+    }
+
+    if (rowData.type === "train") {
+      const row = TrainTrack(rowIndex);
+
+      const train = Train(rowData.length, rowData.direction);
+
+      rowData.ref = train;
+
+      row.add(train);
       map.add(row);
     }
   });

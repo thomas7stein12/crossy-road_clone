@@ -50,11 +50,16 @@ export function hitTest(scene) {
   }
 
   // VEHICLE COLLISION
-  if (row.type === "car" || row.type === "truck") {
+  // VEHICLE COLLISION
+  if (row.type === "car" || row.type === "truck" || row.type === "train") {
     const playerBoundingBox = new THREE.Box3();
     playerBoundingBox.setFromObject(player);
 
-    for (const { ref } of row.vehicles) {
+    // Trains have one reference; cars and trucks have multiple
+    const vehicleRefs =
+      row.type === "train" ? [row.ref] : row.vehicles.map(({ ref }) => ref);
+
+    for (const ref of vehicleRefs) {
       if (!ref) throw Error("Vehicle reference is missing");
 
       const vehicleBoundingBox = new THREE.Box3();

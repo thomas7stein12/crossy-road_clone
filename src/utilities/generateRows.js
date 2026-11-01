@@ -11,10 +11,12 @@ export function generateRows(amount) {
 }
 
 function generateRow() {
-  const type = randomElement(["car", "truck", "forest"]);
+  const type = randomElement(["car", "truck", "forest", "water", "train"]);
+
   if (type === "car") return generateCarLaneMetadata();
   if (type === "truck") return generateTruckLaneMetadata();
   if (type === "water") return generateWaterMetadata();
+  if (type === "train") return generateTrainMetadata();
 
   return generateForestMetadata();
 }
@@ -103,10 +105,7 @@ function generateWaterMetadata() {
     const lengthInTiles = randomElement([3, 3, 4]);
 
     const initialTileIndex =
-      minTileIndex -
-      1 +
-      spacing * index +
-      (Math.random() - 0.5) * 0.5;
+      minTileIndex - 1 + spacing * index + (Math.random() - 0.5) * 0.5;
 
     return {
       initialTileIndex,
@@ -118,9 +117,7 @@ function generateWaterMetadata() {
   const occupiedTiles = new Set();
 
   while (occupiedTiles.size < padCount) {
-    occupiedTiles.add(
-      THREE.MathUtils.randInt(minTileIndex, maxTileIndex),
-    );
+    occupiedTiles.add(THREE.MathUtils.randInt(minTileIndex, maxTileIndex));
   }
 
   const lilyPads = [...occupiedTiles].map((tileIndex) => ({
@@ -134,5 +131,28 @@ function generateWaterMetadata() {
     speed,
     logs,
     lilyPads,
+  };
+}
+
+function generateTrainMetadata() {
+  const direction = randomElement([true, false]);
+
+  // Trains are between 3 and 6 truck lengths
+  const lengthInTruckLengths = THREE.MathUtils.randInt(3, 6);
+  const length = lengthInTruckLengths * 100;
+
+  // Much faster than cars and trucks
+  const speed = randomElement([350, 400, 450, 500]);
+
+  return {
+    type: "train",
+    direction,
+    speed,
+    length,
+
+    // Train movement state
+    started: false,
+    waitingToRespawn: false,
+    respawnTimer: 0,
   };
 }
