@@ -47,29 +47,17 @@ export function animateVehicles() {
 
       let supportingLog = null;
 
-      // Only carry the player when they are standing still
+      // Find a log supporting the player, regardless of lily pads
       if (isPlayersRow && !isPlayerMoving()) {
         const playerX = player.position.x;
 
-        // Don't carry the player if they're standing on a lily pad
-        const onLilyPad = rowData.lilyPads.some((pad) => {
-          const padX = pad.tileIndex * tileSize;
+        supportingLog = rowData.logs.find((logData) => {
+          if (!logData.ref) return false;
 
-          return Math.abs(playerX - padX) <= pad.radius + 7.5;
+          const halfLength = (logData.lengthInTiles * tileSize) / 2;
+
+          return Math.abs(playerX - logData.ref.position.x) <= halfLength + 7.5;
         });
-
-        // Find the log currently supporting the player
-        if (!onLilyPad) {
-          supportingLog = rowData.logs.find((logData) => {
-            if (!logData.ref) return false;
-
-            const halfLength = (logData.lengthInTiles * tileSize) / 2;
-
-            return (
-              Math.abs(playerX - logData.ref.position.x) <= halfLength + 7.5
-            );
-          });
-        }
       }
 
       rowData.logs.forEach((logData) => {
