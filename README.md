@@ -1,31 +1,47 @@
 # Crossy Road Clone
 
-A small 3D road-crossing game built with Three.js and JavaScript.
+A 3D road-crossing game inspired by Crossy Road, built with Three.js and JavaScript.
 
-## 🚧 Work in Progress
+## 🎮 About the Game
 
-This project is still a work in progress. I'm using it as a starter project to teach myself Three.js and get more comfortable working with 3D graphics, animation, lighting, cameras, and game mechanics in JavaScript.
+This is a small 3D game inspired by the original Crossy Road. The goal is to guide your character across an ever-growing map while avoiding traffic, trains, and other obstacles.
 
-## 🎮 About
+I originally started this project as a way to learn Three.js and get more comfortable working with 3D graphics, animations, lighting, and game mechanics in JavaScript. What started as a learning experiment has turned into a fully playable game with different environments, moving obstacles, mobile controls, and more.
 
-This is a simple 3D game inspired by Crossy Road. The goal is to move a player across a map while avoiding moving vehicles.
+The game is playable from start to finish, although I'll probably continue experimenting with new ideas and improvements as I learn more about game development.
 
-I'm building this project step by step as a way to learn how Three.js works and get hands-on experience creating interactive 3D environments. The project is still being developed, so features and gameplay may change as I continue learning.
-
-## ✨ Current Features
+## ✨ Features
 
 - 3D environment built with Three.js
-- Modular project structure with separate components for the player, map, camera, lighting, and renderer
-- Player movement with keyboard and on-screen controls
+- Procedurally generated map with continuously expanding rows
 - Animated player movement and jumping
-- Moving vehicles with basic animations
-- Collision detection
-- Score and retry functionality
+- Multiple environments, including forests, roads, and rivers
+- Moving cars, trucks, and trains
+- Collision detection and game-over mechanics
+- Logs that carry the player across moving water
+- Lily pads that provide safe places to cross rivers
+- Dynamic lighting and shadows
+- Background music
+- Score tracking and restart functionality
+- Keyboard controls for desktop
+- On-screen touchscreen controls for mobile devices
+- Responsive layout for different screen sizes
 
-## 🕹️ Controls
+## 🕹️ How to Play
 
-- **Arrow Keys** – Move the player
-- **On-Screen Controls** – Move forward, backward, left, and right
+The goal is to travel as far as possible without getting hit by traffic, run over by a train, or falling into the water.
+
+Watch the movement of vehicles, look for safe paths through the forests, and use logs and lily pads to cross rivers.
+
+### Desktop Controls
+
+- **Arrow Keys** – Move forward, backward, left, and right
+- **Spacebar** – Start the game or restart after game over
+
+### Mobile Controls
+
+- **On-Screen Directional Buttons** – Move your character
+- **Tap the Screen** – Start the game
 
 ## 🛠️ Built With
 
@@ -34,15 +50,22 @@ I'm building this project step by step as a way to learn how Three.js works and 
 - **Vite** – Development server and build tool
 - **HTML & CSS** – Page structure and styling
 
-## 📚 Learning Goals
+## 📚 What I Learned
 
-This project is primarily a learning experience. Some of the things I'm working on understanding better include:
+This project helped me get more comfortable with Three.js and start understanding how larger 3D games are put together.
 
-- Creating and organizing 3D scenes
-- Working with geometries, materials, and meshes
-- Cameras and lighting
-- Animating objects and player movement
-- Detecting collisions between objects
-- Organizing a larger JavaScript project using modules
+Some of the things I've worked on include:
 
-More features and improvements will be added as I continue learning Three.js.
+- Building and organizing 3D scenes
+- Creating modular JavaScript components
+- Working with cameras, lighting, and shadows
+- Animating 3D objects and player movement
+- Procedural map generation
+- Collision detection and game logic
+- Handling different types of movement and environmental interactions
+- Implementing keyboard and touchscreen controls
+- Optimizing a continuously generated game world
+
+---
+
+Thanks for checking out my project! I'm looking forward to continuing to experiment with Three.js and building more games.
